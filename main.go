@@ -193,7 +193,7 @@ func sse(w http.ResponseWriter, r *http.Request) {
 		case m := <-c.Rx():
 			fmt.Fprintf(w, "event: message\ndata: <li><b>%s</b>%s</li>\n\n", m.From, m.Content)
 		case <-ctx.Done():
-			fmt.Fprintf(w, "event: ping\ndata: ping\n\n")
+			fmt.Fprint(w, "event: ping\ndata: ping\n\n")
 		}
 
 		w.(http.Flusher).Flush()
