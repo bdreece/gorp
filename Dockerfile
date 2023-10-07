@@ -8,4 +8,4 @@ RUN go mod download && \
 COPY . .
 RUN go build -v -o /usr/bin/gorp .
 
-CMD [ "gorp "]
+CMD [ "/usr/bin/gorp" ]

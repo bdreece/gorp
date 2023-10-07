@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -20,7 +21,6 @@ const PAGE string = `
 
     <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
-
     <title>Document</title>
 
     <style>
@@ -129,6 +129,10 @@ func (s Session) Client(name string) Client {
 	}
 }
 
+func (s Session) Release(name string) {
+	delete(s, name)
+}
+
 var s Session
 
 func main() {
@@ -156,7 +160,9 @@ func sse(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Connection", "keep-alive")
 	w.Header().Set("Content-Type", "text/event-stream")
 
-	c := s.Client(middleware.GetReqID(r.Context()))
+	id := middleware.GetReqID(r.Context())
+	c := s.Client(id)
+	defer s.Release(id)
 
 	for {
         ctx, cancel := context.WithTimeout(context.Background(), 1 * time.Second)
@@ -169,7 +175,7 @@ func sse(w http.ResponseWriter, r *http.Request) {
             fmt.Fprintf(w, "event: ping\ndata: ping\n\n")
         }
 
-		w.(http.Flusher).Flush()
+	w.(http.Flusher).Flush()
 	}
 }
 
