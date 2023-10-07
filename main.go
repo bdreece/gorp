@@ -113,6 +113,7 @@ type Message struct {
 type Client chan Message
 
 func NewClient() Client {
+    l.Info("Creating client")
 	var c Client = make(chan Message)
 	return c
 }
@@ -128,11 +129,13 @@ func (c Client) Rx() <-chan Message {
 type Session map[string]Client
 
 func NewSession() Session {
+    l.Info("Creating session")
 	var s Session = make(map[string]Client)
 	return s
 }
 
 func (s Session) Broadcast(m Message) {
+    l.Info("Broadcasting message")
 	for _, c := range s {
 		c.Tx() <- m
 	}
@@ -149,6 +152,7 @@ func (s Session) Client(name string) Client {
 }
 
 func (s Session) Release(name string) {
+    l.Info("Releasing client")
 	delete(s, name)
 }
 
@@ -182,11 +186,12 @@ func sse(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/event-stream")
 
 	id := middleware.GetReqID(r.Context())
+
 	c := s.Client(id)
 	defer s.Release(id)
 
 	for {
-		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+		ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
 		defer cancel()
 
 		select {
@@ -202,12 +207,10 @@ func sse(w http.ResponseWriter, r *http.Request) {
 
 func send(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	name := r.FormValue("name")
-	content := r.FormValue("content")
 
 	s.Broadcast(Message{
-		From:    name,
-		Content: content,
+		From:    r.FormValue("name"),
+		Content: r.FormValue("content"),
 	})
 
 	w.WriteHeader(200)
