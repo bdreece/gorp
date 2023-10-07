@@ -1,11 +1,9 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -197,18 +195,17 @@ func sse(w http.ResponseWriter, r *http.Request) {
 	defer s.Release(id)
 
 	for {
-		ctx, cancel := context.WithTimeout(r.Context(), 1*time.Second)
-		defer cancel()
-
 		select {
 		case m := <-c.Rx():
 			fmt.Fprintf(w, "event: message\ndata: <li><b>%s</b>%s</li>\n\n", m.From, m.Content)
-		case <-ctx.Done():
-			fmt.Fprint(w, "event: ping\ndata: ping\n\n")
+        case <-r.Context().Done():
+            goto done
 		}
 
 		w.(http.Flusher).Flush()
 	}
+
+done:
 }
 
 func send(w http.ResponseWriter, r *http.Request) {
