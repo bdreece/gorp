@@ -21,7 +21,7 @@ const PAGE string = `
 
     <script src="https://unpkg.com/htmx.org@1.9.6" integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
-    <title>Document</title>
+    <title>gorp</title>
 
     <style>
         body, body > section, header, form, li {
