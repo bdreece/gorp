@@ -59,6 +59,12 @@ const PAGE string = `
             margin-top: 1rem;
         }
 
+        @media screen and (max-width: 640px) {
+            form {
+                flex-direction: column;
+            }
+        }
+
         form > input, button {
             margin-block: auto
         }
