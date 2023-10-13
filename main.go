@@ -107,7 +107,7 @@ const PAGE string = `
     </section>
 
     <footer>
-        <p>Copyright &copy; 2023 Brian Reece
+        <p>Copyright &copy; 2023 <a href="https://www.bdreece.dev" target="_blank" rel="noreferrer">Brian Reece</a></p>
     </footer>
 </body>
 
