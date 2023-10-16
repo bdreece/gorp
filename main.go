@@ -98,8 +98,7 @@ const PAGE string = `
 
             <div class="form-control">
                 <label for="content">Message</label>
-                <textarea id="content" name="content" rows="5" cols="40">
-                </textarea>
+                <textarea id="content" name="content" rows="5" cols="40"></textarea>
             </div>
 
             <button type="submit">Send</button>
